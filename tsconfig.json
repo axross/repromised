@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": ["es2015", "dom"],
+    "module": "umd",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "jsxFactory": "createElement",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "exclude": ["node_modules"]
+}

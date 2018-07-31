@@ -1,0 +1,51 @@
+{
+  "name": "repromised",
+  "description": "Repromised is a component resolves a promise and provides its' value with Render Props pattern.",
+  "keywords": [
+    "react",
+    "render-props",
+    "promise",
+    "async"
+  ],
+  "author": "Kohei Asai <me@axross.io> (https://axross.io/)",
+  "version": "0.1.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axross/repromised.git"
+  },
+  "bugs": {
+    "url": "https://github.com/axross/repromised/issues"
+  },
+  "homepage": "https://github.com/axross/repromised#readme",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "react": "^16.4.1"
+  },
+  "optionalDependencies": {},
+  "devDependencies": {
+    "@types/jest": "^23.3.1",
+    "@types/react": "^16.4.7",
+    "@types/react-test-renderer": "^16.0.1",
+    "jest": "^23.4.2",
+    "prettier": "^1.14.0",
+    "react": "^16.4.1",
+    "react-test-renderer": "^16.4.1",
+    "rimraf": "^2.6.2",
+    "ts-jest": "^23.0.1",
+    "typescript": "^3.0.1"
+  },
+  "scripts": {
+    "lint": "prettier --list-different ./src/**/*.ts ./src/**/*.tsx",
+    "format": "prettier --write ./src/**/*.ts ./src/**/*.tsx",
+    "check": "tsc --noEmit --pretty",
+    "test": "jest",
+    "compile": "rimraf dist && tsc --project ./ --declaration --outDir ./dist"
+  }
+}
