@@ -7,7 +7,7 @@ describe('<Repromised>', () => {
     const initial = Symbol('initial');
     const returnValue = Symbol('returnValue');
     const children = jest.fn(
-      (value, isLoading) => (isLoading ? <span>Loading ...</span> : <span>{value.toString()}</span>)
+      (value, isProcessing) => (isProcessing ? <span>Loading ...</span> : <span>{value.toString()}</span>)
     );
     const promiseFunction = jest.fn(() => Promise.resolve(returnValue));
 
