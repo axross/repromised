@@ -19,6 +19,12 @@
 
 [![Repromised Example](https://user-images.githubusercontent.com/4289883/43618182-cc1e7e0e-967b-11e8-892f-3aecfaf8ece6.gif)](https://codesandbox.io/s/0mkr4nkokv)
 
+## Install
+
+```
+npm i -S repromised
+```
+
 ## APIs
 
 ### `<Repromised>`
