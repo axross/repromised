@@ -32,6 +32,23 @@
 | `beforeResolve` | `() => void`                                  |          | A callback function which is called before the promise resolves                                                                                                    |
 | `children`      | `(value: T, isLoading: boolean) => ReactNode` |          | A render props function which provides the resolved value from the promise and whether the promise is processing. If this is omitted, the component renders `null` |
 
+#### Usage
+
+```jsx
+import Repromised from 'repromised';
+
+const SearchResult = ({ query }) => (
+  <Repromised promise={() => fetchByQuery(query)} initial={[]} key={query}>
+    {(results, isLoading) => isLoading
+      ? <Loading />
+      : <ResultList>
+          {results.map(result => <ResultListItem result={result} />)}
+        </ResultList>
+    }
+  </Repromised>
+);
+```
+
 ## License
 
 MIT
