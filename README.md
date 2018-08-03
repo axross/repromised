@@ -4,11 +4,13 @@
 [![GitHub stars](https://img.shields.io/github/stars/axross/repromised.svg)](https://github.com/axross/repromised/stargazers)
 [![GitHub license](https://img.shields.io/github/license/axross/repromised.svg)](https://github.com/axross/repromised/blob/master/LICENSE)
 
-**Repromised** is a component resolves a promise and provides its' value with
+**Repromised** is a component to resolve a promise and provides its' value with
 [Render Props](https://reactjs.org/docs/render-props.html) pattern.
 
-- 🙌🏻 Dependency free
+- 🚀 Dependency free
 - 🏄‍ Extremely tiny
+- 🔌 Plug and Play
+- 👷 Well tested
 - 👔 Built with TypeScript
 
 ## Example
