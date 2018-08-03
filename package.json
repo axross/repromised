@@ -1,6 +1,6 @@
 {
   "name": "repromised",
-  "description": "Repromised is a component resolves a promise and provides its' value with Render Props pattern.",
+  "description": "Declarative promise resolver as a render props component",
   "keywords": [
     "react",
     "render-props",
