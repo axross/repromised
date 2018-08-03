@@ -1,4 +1,4 @@
-# ![Repromised](https://user-images.githubusercontent.com/4289883/43491551-dc28c168-94d9-11e8-8c56-b10389544933.png)
+# [![Repromised](https://user-images.githubusercontent.com/4289883/43491551-dc28c168-94d9-11e8-8c56-b10389544933.png)](https://github.com/axross/repromised)
 
 [![npm](https://img.shields.io/npm/dt/repromised.svg)](https://www.npmjs.com/package/repromised)
 [![GitHub stars](https://img.shields.io/github/stars/axross/repromised.svg)](https://github.com/axross/repromised/stargazers)
@@ -13,7 +13,9 @@
 
 ## Example
 
-[Here](https://codesandbox.io/s/0mkr4nkokv)
+[**TRY IT OUT HERE**](https://codesandbox.io/s/0mkr4nkokv)
+
+[![Repromised Example](https://user-images.githubusercontent.com/4289883/43618182-cc1e7e0e-967b-11e8-892f-3aecfaf8ece6.gif)](https://codesandbox.io/s/0mkr4nkokv)
 
 ## APIs
 
