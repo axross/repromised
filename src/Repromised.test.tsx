@@ -6,8 +6,8 @@ describe('<Repromised>', () => {
   test('has props.children() as a render-props resolving a promise', done => {
     const initial = Symbol('initial');
     const returnValue = Symbol('returnValue');
-    const children = jest.fn(
-      (value, isProcessing) => (isProcessing ? <span>Loading ...</span> : <span>{value.toString()}</span>)
+    const children = jest.fn((value, isProcessing) =>
+      isProcessing ? <span>Loading ...</span> : <span>{value.toString()}</span>
     );
     const promiseFunction = jest.fn(() => Promise.resolve(returnValue));
 
