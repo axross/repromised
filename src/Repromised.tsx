@@ -1,62 +1,102 @@
-import { PureComponent, ReactNode } from "react";
+import { Attributes, Component, ReactNode } from "react";
 
-type Children<Value> = (value: Value, isProcessing: boolean) => ReactNode;
+type Children<Value> = (snapshot: Snapshot<Value>) => ReactNode;
 
-type Props<Value> = {
+export enum Status {
+  Pending,
+  Fulfilled,
+  Rejected
+}
+
+interface Props<Value> extends Attributes {
   promise: () => Promise<Value>;
-  initial: Value;
-  then?: (value: Value) => void;
-  catch?: (err: Error) => void;
-  beforeResolve?: () => void;
+  initial?: Value;
   children?: Children<Value>;
-};
+}
 
-type State<Value> = {
-  value: Value;
-  isProcessing: boolean;
-};
+interface State<Value> {
+  snapshot: Snapshot<Value>;
+}
 
-class Repromised<Value> extends PureComponent<Props<Value>, State<Value>> {
+class Repromised<Value> extends Component<Props<Value>, State<Value>> {
+  public constructor(props: Props<Value>) {
+    super(props);
+
+    this.state = {
+      snapshot: new SnapshotImpl(
+        Status.Pending,
+        props.initial === undefined ? null : props.initial
+      )
+    };
+  }
+
   public componentDidMount() {
-    this.setState({ isProcessing: true });
-
-    if (this.props.beforeResolve) {
-      this.props.beforeResolve();
-    }
-
     this.props
       .promise()
       .then(value => {
-        this.setState({ value, isProcessing: false });
-
-        if (this.props.then) {
-          this.props.then(value);
-        }
+        this.setState({
+          snapshot: new SnapshotImpl(Status.Fulfilled, value)
+        });
       })
-      .catch(err => {
-        if (this.props.catch) {
-          this.props.catch(err);
-        }
-
-        this.setState({ isProcessing: false });
+      .catch(error => {
+        this.setState({
+          snapshot: new SnapshotImpl<Value>(Status.Rejected, null, error)
+        });
       });
   }
 
   public render() {
     if (this.props.children) {
-      return this.props.children(this.state.value, this.state.isProcessing);
+      return this.props.children(this.state.snapshot);
     }
 
     return null;
   }
+}
 
-  public constructor(props: Props<Value>) {
-    super(props);
+export abstract class Snapshot<Value> {
+  abstract readonly status: Status;
 
-    this.state = {
-      value: props.initial,
-      isProcessing: false
-    };
+  abstract readonly value: Value | null;
+
+  abstract readonly error: Error | null;
+
+  abstract readonly isLoading: boolean;
+
+  abstract readonly requireValue: Value;
+}
+
+class SnapshotImpl<Value> implements Snapshot<Value> {
+  constructor(
+    status: Status,
+    value: Value | null = null,
+    error: Error | null = null
+  ) {
+    this.status = status;
+    this.value = value;
+    this.error = error;
+  }
+
+  readonly status: Status;
+
+  readonly value: Value | null;
+
+  readonly error: Error | null;
+
+  get isLoading(): boolean {
+    if (this.status === Status.Fulfilled || this.status === Status.Rejected) {
+      return false;
+    }
+
+    return true;
+  }
+
+  get requireValue(): Value {
+    if (this.value === null) {
+      throw new Error();
+    }
+
+    return this.value;
   }
 }
 

@@ -1,114 +1,179 @@
 import { createElement } from "react";
 import * as TestRenderer from "react-test-renderer";
-import Repromised from "./Repromised";
+import Repromised, { Status } from "./Repromised";
 
 describe("<Repromised>", () => {
-  test("has props.children() as a render-props resolving a promise", done => {
-    const initial = Symbol("initial");
-    const returnValue = Symbol("returnValue");
-    const children = jest.fn((value, isProcessing) =>
-      isProcessing ? <span>Loading ...</span> : <span>{value.toString()}</span>
-    );
-    const promiseFunction = jest.fn(() => Promise.resolve(returnValue));
+  describe("when props.promise resolves with a value", () => {
+    test("calls props.children with the snapshot which expresses the promise is pending at 1st call", done => {
+      const children = jest.fn(_ => null);
+      const promiseFunction = jest.fn(() => Promise.resolve("PROMISED"));
 
-    const testRenderer = TestRenderer.create(
-      <Repromised promise={promiseFunction} initial={initial}>
-        {children}
-      </Repromised>
-    );
+      TestRenderer.create(
+        <Repromised promise={promiseFunction} initial={"INITIAL"}>
+          {children}
+        </Repromised>
+      );
 
-    setTimeout(() => {
-      expect(promiseFunction).toHaveBeenCalled();
-      expect(children).toHaveBeenNthCalledWith(1, initial, false);
-      expect(children).toHaveBeenNthCalledWith(2, initial, true);
-      expect(children).toHaveBeenNthCalledWith(3, returnValue, false);
-      expect(testRenderer.toJSON()).toMatchSnapshot();
+      setTimeout(() => {
+        expect(children.mock.calls[0][0].status).toBe(Status.Pending);
+        expect(children.mock.calls[0][0].value).toBe("INITIAL");
+        expect(children.mock.calls[0][0].error).toBe(null);
+        expect(children.mock.calls[0][0].isLoading).toBe(true);
+        expect(children.mock.calls[0][0].requireValue).toBe("INITIAL");
 
-      done();
-    }, 5);
+        done();
+      }, 5);
+    });
+
+    test("calls props.children with the snapshot which expresses the promise is fulfilled at 2st call", done => {
+      const children = jest.fn(_ => null);
+      const promiseFunction = jest.fn(() => Promise.resolve("PROMISED"));
+
+      TestRenderer.create(
+        <Repromised promise={promiseFunction} initial={"INITIAL"}>
+          {children}
+        </Repromised>
+      );
+
+      setTimeout(() => {
+        expect(children.mock.calls[1][0].status).toBe(Status.Fulfilled);
+        expect(children.mock.calls[1][0].value).toBe("PROMISED");
+        expect(children.mock.calls[1][0].error).toBe(null);
+        expect(children.mock.calls[1][0].isLoading).toBe(false);
+        expect(children.mock.calls[1][0].requireValue).toBe("PROMISED");
+
+        done();
+      }, 5);
+    });
   });
 
-  test("calls props.beforeResolve() and then resolves a promise and calls props.then() when the promise is resolved", done => {
-    const called: string[] = [];
+  describe("when props.promise rejects with an error", () => {
+    test("calls props.children with the snapshot which expresses the promise is pending at 1st call", done => {
+      const children = jest.fn(_ => null);
+      const error = new Error("REJECTED");
+      const promiseFunction = jest.fn(() => Promise.reject<any>(error));
 
-    const returnValue = Symbol("returnValue");
-    const promiseFunction = jest.fn(() => {
-      called.push("promiseFunction");
+      TestRenderer.create(
+        <Repromised promise={promiseFunction} initial={"INITIAL"}>
+          {children}
+        </Repromised>
+      );
 
-      return Promise.resolve(returnValue);
+      setTimeout(() => {
+        expect(children.mock.calls[0][0].status).toBe(Status.Pending);
+        expect(children.mock.calls[0][0].value).toBe("INITIAL");
+        expect(children.mock.calls[0][0].error).toBe(null);
+        expect(children.mock.calls[0][0].isLoading).toBe(true);
+        expect(children.mock.calls[0][0].requireValue).toBe("INITIAL");
+
+        done();
+      }, 5);
     });
-    const beforeResolve = jest.fn(() => {
-      called.push("beforeResolve");
+
+    test("calls props.children with the snapshot which expresses the promise is rejected at 2st call", done => {
+      const children = jest.fn(_ => null);
+      const error = new Error("REJECTED");
+      const promiseFunction = jest.fn(() => Promise.reject<any>(error));
+
+      TestRenderer.create(
+        <Repromised promise={promiseFunction} initial={"INITIAL"}>
+          {children}
+        </Repromised>
+      );
+
+      setTimeout(() => {
+        expect(children.mock.calls[1][0].status).toBe(Status.Rejected);
+        expect(children.mock.calls[1][0].value).toBe(null);
+        expect(children.mock.calls[1][0].error).toBe(error);
+        expect(children.mock.calls[1][0].isLoading).toBe(false);
+        expect(() => children.mock.calls[1][0].requireValue).toThrow();
+
+        done();
+      }, 5);
     });
-    const then = jest.fn(() => {
-      called.push("then");
-    });
-
-    TestRenderer.create(
-      <Repromised
-        promise={promiseFunction}
-        initial={Symbol("initial")}
-        beforeResolve={beforeResolve}
-        then={then}
-      >
-        {() => null}
-      </Repromised>
-    );
-
-    setTimeout(() => {
-      expect(promiseFunction).toHaveBeenCalled();
-      expect(then).toHaveBeenCalledWith(returnValue);
-      expect(called).toEqual(["beforeResolve", "promiseFunction", "then"]);
-
-      done();
-    }, 5);
   });
 
-  test("calls props.catch() when the promise is rejected", done => {
-    const called: string[] = [];
+  describe("props.initial is omitted", () => {
+    describe("when props.promise resolves with a value", () => {
+      test("calls props.children with the snapshot which expresses the promise is pending at 1st call", done => {
+        const children = jest.fn(_ => null);
+        const promiseFunction = jest.fn(() => Promise.resolve("PROMISED"));
 
-    const error = Symbol("error");
-    const promiseFunction = jest.fn(() => {
-      called.push("promiseFunction");
+        TestRenderer.create(
+          <Repromised promise={promiseFunction}>{children}</Repromised>
+        );
 
-      return Promise.reject(error);
+        setTimeout(() => {
+          expect(children.mock.calls[0][0].status).toBe(Status.Pending);
+          expect(children.mock.calls[0][0].value).toBe(null);
+          expect(children.mock.calls[0][0].error).toBe(null);
+          expect(children.mock.calls[0][0].isLoading).toBe(true);
+          expect(() => children.mock.calls[0][0].requireValue).toThrow();
+
+          done();
+        }, 5);
+      });
+
+      test("calls props.children with the snapshot which expresses the promise is fulfilled at 2st call", done => {
+        const children = jest.fn(_ => null);
+        const promiseFunction = jest.fn(() => Promise.resolve("PROMISED"));
+
+        TestRenderer.create(
+          <Repromised promise={promiseFunction}>{children}</Repromised>
+        );
+
+        setTimeout(() => {
+          expect(children.mock.calls[1][0].status).toBe(Status.Fulfilled);
+          expect(children.mock.calls[1][0].value).toBe("PROMISED");
+          expect(children.mock.calls[1][0].error).toBe(null);
+          expect(children.mock.calls[1][0].isLoading).toBe(false);
+          expect(children.mock.calls[1][0].requireValue).toBe("PROMISED");
+
+          done();
+        }, 5);
+      });
     });
-    const beforeResolve = jest.fn(() => {
-      called.push("beforeResolve");
+
+    describe("when props.promise rejects with an error", () => {
+      test("calls props.children with the snapshot which expresses the promise is pending at 1st call", done => {
+        const children = jest.fn(_ => null);
+        const error = new Error("REJECTED");
+        const promiseFunction = jest.fn(() => Promise.reject<any>(error));
+
+        TestRenderer.create(
+          <Repromised promise={promiseFunction}>{children}</Repromised>
+        );
+
+        setTimeout(() => {
+          expect(children.mock.calls[0][0].status).toBe(Status.Pending);
+          expect(children.mock.calls[0][0].value).toBe(null);
+          expect(children.mock.calls[0][0].error).toBe(null);
+          expect(children.mock.calls[0][0].isLoading).toBe(true);
+          expect(() => children.mock.calls[0][0].requireValue).toThrow();
+
+          done();
+        }, 5);
+      });
+
+      test("calls props.children with the snapshot which expresses the promise is rejected at 2st call", done => {
+        const children = jest.fn(_ => null);
+        const error = new Error("REJECTED");
+        const promiseFunction = jest.fn(() => Promise.reject<any>(error));
+
+        TestRenderer.create(
+          <Repromised promise={promiseFunction}>{children}</Repromised>
+        );
+
+        setTimeout(() => {
+          expect(children.mock.calls[1][0].status).toBe(Status.Rejected);
+          expect(children.mock.calls[1][0].value).toBe(null);
+          expect(children.mock.calls[1][0].error).toBe(error);
+          expect(children.mock.calls[1][0].isLoading).toBe(false);
+          expect(() => children.mock.calls[1][0].requireValue).toThrow();
+
+          done();
+        }, 5);
+      });
     });
-    const catchFunction = jest.fn(() => {
-      called.push("catch");
-    });
-
-    TestRenderer.create(
-      <Repromised
-        promise={promiseFunction}
-        initial={Symbol("initial")}
-        beforeResolve={beforeResolve}
-        catch={catchFunction}
-      >
-        {() => null}
-      </Repromised>
-    );
-
-    setTimeout(() => {
-      expect(promiseFunction).toHaveBeenCalled();
-      expect(catchFunction).toHaveBeenCalledWith(error);
-      expect(called).toEqual(["beforeResolve", "promiseFunction", "catch"]);
-
-      done();
-    }, 5);
-  });
-
-  test("renders null if props.children is void", () => {
-    const testRenderer = TestRenderer.create(
-      <Repromised
-        promise={() => Promise.resolve(Symbol("returnValue"))}
-        initial={Symbol("initial")}
-      />
-    );
-
-    expect(testRenderer.root.children).toEqual([]);
-    expect(testRenderer.toJSON()).toMatchSnapshot();
   });
 });
