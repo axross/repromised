@@ -1,1 +1,1 @@
-export { default } from "./Repromised";
+export { default, Status as RepromisedStatus } from "./Repromised";
