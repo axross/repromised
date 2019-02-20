@@ -3,9 +3,9 @@ import { Attributes, Component, ReactNode } from "react";
 type Children<Value> = (snapshot: Snapshot<Value>) => ReactNode;
 
 export enum Status {
-  Pending,
-  Fulfilled,
-  Rejected
+  Pending = "PENDING",
+  Fulfilled = "FULFILLED",
+  Rejected = "REJECTED"
 }
 
 interface Props<Value> extends Attributes {
