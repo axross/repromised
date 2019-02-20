@@ -1,11 +1,11 @@
-import { createElement } from 'react';
-import * as TestRenderer from 'react-test-renderer';
-import Repromised from './Repromised';
+import { createElement } from "react";
+import * as TestRenderer from "react-test-renderer";
+import Repromised from "./Repromised";
 
-describe('<Repromised>', () => {
-  test('has props.children() as a render-props resolving a promise', done => {
-    const initial = Symbol('initial');
-    const returnValue = Symbol('returnValue');
+describe("<Repromised>", () => {
+  test("has props.children() as a render-props resolving a promise", done => {
+    const initial = Symbol("initial");
+    const returnValue = Symbol("returnValue");
     const children = jest.fn((value, isProcessing) =>
       isProcessing ? <span>Loading ...</span> : <span>{value.toString()}</span>
     );
@@ -28,24 +28,29 @@ describe('<Repromised>', () => {
     }, 5);
   });
 
-  test('calls props.beforeResolve() and then resolves a promise and calls props.then() when the promise is resolved', done => {
+  test("calls props.beforeResolve() and then resolves a promise and calls props.then() when the promise is resolved", done => {
     const called: string[] = [];
 
-    const returnValue = Symbol('returnValue');
+    const returnValue = Symbol("returnValue");
     const promiseFunction = jest.fn(() => {
-      called.push('promiseFunction');
+      called.push("promiseFunction");
 
       return Promise.resolve(returnValue);
     });
     const beforeResolve = jest.fn(() => {
-      called.push('beforeResolve');
+      called.push("beforeResolve");
     });
     const then = jest.fn(() => {
-      called.push('then');
+      called.push("then");
     });
 
     TestRenderer.create(
-      <Repromised promise={promiseFunction} initial={Symbol('initial')} beforeResolve={beforeResolve} then={then}>
+      <Repromised
+        promise={promiseFunction}
+        initial={Symbol("initial")}
+        beforeResolve={beforeResolve}
+        then={then}
+      >
         {() => null}
       </Repromised>
     );
@@ -53,32 +58,32 @@ describe('<Repromised>', () => {
     setTimeout(() => {
       expect(promiseFunction).toHaveBeenCalled();
       expect(then).toHaveBeenCalledWith(returnValue);
-      expect(called).toEqual(['beforeResolve', 'promiseFunction', 'then']);
+      expect(called).toEqual(["beforeResolve", "promiseFunction", "then"]);
 
       done();
     }, 5);
   });
 
-  test('calls props.catch() when the promise is rejected', done => {
+  test("calls props.catch() when the promise is rejected", done => {
     const called: string[] = [];
 
-    const error = Symbol('error');
+    const error = Symbol("error");
     const promiseFunction = jest.fn(() => {
-      called.push('promiseFunction');
+      called.push("promiseFunction");
 
       return Promise.reject(error);
     });
     const beforeResolve = jest.fn(() => {
-      called.push('beforeResolve');
+      called.push("beforeResolve");
     });
     const catchFunction = jest.fn(() => {
-      called.push('catch');
+      called.push("catch");
     });
 
     TestRenderer.create(
       <Repromised
         promise={promiseFunction}
-        initial={Symbol('initial')}
+        initial={Symbol("initial")}
         beforeResolve={beforeResolve}
         catch={catchFunction}
       >
@@ -89,15 +94,18 @@ describe('<Repromised>', () => {
     setTimeout(() => {
       expect(promiseFunction).toHaveBeenCalled();
       expect(catchFunction).toHaveBeenCalledWith(error);
-      expect(called).toEqual(['beforeResolve', 'promiseFunction', 'catch']);
+      expect(called).toEqual(["beforeResolve", "promiseFunction", "catch"]);
 
       done();
     }, 5);
   });
 
-  test('renders null if props.children is void', () => {
+  test("renders null if props.children is void", () => {
     const testRenderer = TestRenderer.create(
-      <Repromised promise={() => Promise.resolve(Symbol('returnValue'))} initial={Symbol('initial')} />
+      <Repromised
+        promise={() => Promise.resolve(Symbol("returnValue"))}
+        initial={Symbol("initial")}
+      />
     );
 
     expect(testRenderer.root.children).toEqual([]);

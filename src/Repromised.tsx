@@ -1,4 +1,4 @@
-import { PureComponent, ReactNode } from 'react';
+import { PureComponent, ReactNode } from "react";
 
 type Children<Value> = (value: Value, isProcessing: boolean) => ReactNode;
 
@@ -55,7 +55,7 @@ class Repromised<Value> extends PureComponent<Props<Value>, State<Value>> {
 
     this.state = {
       value: props.initial,
-      isProcessing: false,
+      isProcessing: false
     };
   }
 }
