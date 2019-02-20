@@ -4,7 +4,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/axross/repromised.svg)](https://github.com/axross/repromised/stargazers)
 [![GitHub license](https://img.shields.io/github/license/axross/repromised.svg)](https://github.com/axross/repromised/blob/master/LICENSE)
 
-**Repromised** is a component to resolve a promise and provides its' value with
+**Repromised** is a component to build children by resolving a promise with
 [Render Props](https://reactjs.org/docs/render-props.html) pattern.
 
 - 🚀 Dependency free
@@ -31,14 +31,23 @@ npm i -S repromised
 
 #### Props
 
-| Name            | Type                                             | Required | Description                                                                                                                                                        |
-| --------------- | ------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `promise`       | `() => Promise<T>`                               | ✓        | A function returning a promise to resolve (this will be called when the component is mounted)                                                                      |
-| `initial`       | `T`                                              | ✓        | An initial value                                                                                                                                                   |
-| `then`          | `(value: T) => void`                             |          | A callback function which is called when the promise is resolved                                                                                                   |
-| `catch`         | `(err: Error) => void`                           |          | A callback function which is called when the promise is rejected                                                                                                   |
-| `beforeResolve` | `() => void`                                     |          | A callback function which is called before the promise resolves                                                                                                    |
-| `children`      | `(value: T, isProcessing: boolean) => ReactNode` |          | A render props function which provides the resolved value from the promise and whether the promise is processing. If this is omitted, the component renders `null` |
+| Name       | Type                                                                    | Required | Description                                                                      |
+| ---------- | ----------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------- |
+| `promise`  | `() => Promise<Value>`                                                  | ✓        | A function returning a promise (it will be called when the component is mounted) |
+| `initial`  | `Value` (the same type with the value what the promise should resolves) |          | An initial value                                                                 |
+| `children` | `(snapshot: Snapshot) => ReactNode`                                     |          | A render props function                                                          |
+
+#### Snapshot
+
+`<Repromised>` receives children as a render-props pattern function that gives a snapshot object which has the shape like the following:
+
+| Name           | Type                                                    | Description                                                                                                                        |
+| -------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `status`       | `"PENDING"`, `"FULFILLED"` or `"REJECTED"`              | The promise's status. In TypeScript you can use `Status` enum instead of string enum                                               |
+| `value`        | `Value` (the value what the promise resolves) or `null` | The value what the promise resolves. When `status` is `"PENDING"` or `"REJECTED"` and `props.initial` is not given, this is `null` |
+| `error`        | `Error` or `null`                                       | The error when the promise rejects. This is `null` if `status` is not `"REJECTED"`                                                 |
+| `isLoading`    | `boolean`                                               | A short hand value whether the promise's status is `"PENDING"` or not (same with to `status === "PENDING"`).                       |
+| `requireValue` | `Value` (the value what the promise resolves)           | Same as `value` but it throws an error if `value` is `null`                                                                        |
 
 #### Usage
 
@@ -48,10 +57,10 @@ import Repromised from 'repromised';
 
 const SearchResult = ({ query }) => (
   <Repromised promise={() => fetchByQuery(query)} initial={[]} key={query}>
-    {(results, isProcessing) => isProcessing
+    {snapshot => snapshot.isLoading
       ? <Loading />
       : <ResultList>
-          {results.map(result => <ResultListItem result={result} />)}
+          {snapshot.value.map(result => <ResultListItem result={result} />)}
         </ResultList>
     }
   </Repromised>
@@ -64,4 +73,4 @@ MIT
 
 ## Contribute
 
-You can help improving this project leaving Pull requests and helping with Issues.
+Any feedback is welcome! You can help improving this project leaving Pull requests and helping with Issues.
