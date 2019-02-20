@@ -17,7 +17,7 @@
 
 [**TRY IT OUT HERE**](https://codesandbox.io/s/0mkr4nkokv)
 
-[![Repromised Example](https://user-images.githubusercontent.com/4289883/43618182-cc1e7e0e-967b-11e8-892f-3aecfaf8ece6.gif)](https://codesandbox.io/s/0mkr4nkokv)
+[<img src="https://user-images.githubusercontent.com/4289883/43618182-cc1e7e0e-967b-11e8-892f-3aecfaf8ece6.gif" alt="Repromised Example" width="480" />](https://codesandbox.io/s/0mkr4nkokv)
 
 ## Install
 
