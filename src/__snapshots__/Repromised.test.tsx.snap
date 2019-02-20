@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`<Repromised> has props.children() as a render-props resolving a promise 1`] = `
-<span>
-  Symbol(returnValue)
-</span>
-`;
-
-exports[`<Repromised> renders null if props.children is void 1`] = `null`;
